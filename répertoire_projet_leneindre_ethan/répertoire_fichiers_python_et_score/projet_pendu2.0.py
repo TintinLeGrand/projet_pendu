@@ -1,5 +1,7 @@
 from random import randint
 from dessin_pendu import *
+import time
+import datetime
 
 def enregistrement_des_mots():
     x= randint(1,1)
@@ -38,10 +40,10 @@ def detection_lettre(lettre,le_mot,mot_en_cours):
             mot_en_cours[i]=lettre
             etat=True
     return mot_en_cours, etat
-    
-def enregistrer_score(score):
+
+def enregistrer_score(score, date):
     with open('score.txt','a') as f:
-        f.write(str(score)+'\n \n')
+        f.write(date+ "Score atteint lors de la session : "+ str(score)+'%.\n\n')
     
 def reset():
     f=0
@@ -49,30 +51,39 @@ def reset():
     faute=0
     return f, x, faute
 
-'''Code fumier'''
+'''Code principal'''
 phrase_bien=["J'ai un champion en face de moi !", "Tu es trop fort !", "Bonne réponse !", "Ouah, mais tu triches ?", "T'es le plus fort"]
+points=0
 score=0
 liste_dictee, nombre_de_mots= enregistrement_des_mots()
-nombre_mots=len(liste_dictee)
-while nombre_mots>1:
-    nombre_mots=len(liste_dictee)
+total=nombre_de_mots
+while nombre_de_mots>1:
+    nombre_de_mots=len(liste_dictee)
     f, x, faute=reset()
     mot, liste_dictee=choix_du_mot(liste_dictee)
     mot_vide=transformation_mot(mot)
-    print(mot_vide)
+    print(f'\033[34mNouveau mot :{mot_vide}')
     mot_en_cours=mot_vide
     while f!=1:
-        ltr=input('Choisissez une lettre')
+        ltr=input('\033[30mChoisissez une lettre')
         mot_en_cours, etat=detection_lettre(ltr,mot,mot_en_cours)
+        affichage_du_mort(faute)
         if etat==False:
             faute+=1
-        if faute>=7:
+        if faute>=8:
             f=1
-            print(f"Mot perdu, c'était le mot {mot}")
-        affichage_du_mort(faute)
-        print(mot_en_cours)
+            print(f"\033[31mMot perdu, c'était le mot {mot}.\n____________________\n")
+            time.sleep(3)
+        if faute<8:
+            print(f'\033[30m{mot_en_cours}')
         if etat==True:
-            print(f'{phrase_bien[randint(0,4)]}\n\n')
+            print(f'\033[30m{phrase_bien[randint(0,4)]}\n')
         if mot_en_cours==list(mot.strip()):
             f=1
-            print("Mot trouvé !")
+            points=points+1
+            print("\033[32mMot trouvé !\n____________________\n")
+            time.sleep(3)
+score=int(100*points/total)
+print(f'Le score est de {score}%')
+date= datetime.datetime.now().strftime("Le %d/%m/%Y à %H:%M:%S : ")
+enregistrer_score(score, date)

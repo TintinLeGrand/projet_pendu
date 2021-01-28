@@ -1,0 +1,10 @@
+village
+personnage
+bavardant
+place
+milieu
+taquinant
+rivière
+car
+façon
+ville
