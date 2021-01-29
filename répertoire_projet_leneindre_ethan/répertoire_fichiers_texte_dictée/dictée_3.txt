@@ -1,0 +1,10 @@
+profession
+emploi
+argent
+entreprise
+prix
+usine
+employé
+bureau
+siège
+patron
